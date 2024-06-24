@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const results = fuse.search(query);
                 searchResults.innerHTML = results.map(result => {
                     const item = result.item;
-                    return `<a href="/${item.origin}/${item.title.toLowerCase().replace(/\s+/g, '-')}.html">${item.title}</a>`;
+                    return `<a href="/${item.origin}/${item.title.toLowerCase().replace(/\s+/g, '-')}">${item.title}</a>`;
                 }).join('');
                 
                 searchResults.style.display = results.length ? 'block' : 'none';
