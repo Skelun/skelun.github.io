@@ -1,7 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
     const minChar = 2;
     const isAlertListPage = window.location.pathname.includes('/alert-list/');
-    const isBasedGamesPage = window.location.pathname.includes('/based-games/');
+
+    const ensureMinimumItems = (container, minItems) => {
+        const currentItems = container.children.length;
+        for (let i = currentItems; i < minItems; i++) {
+            const emptyItem = document.createElement('a');
+            emptyItem.className = 'game';
+            container.appendChild(emptyItem);
+        }
+    };
 
     fetch('/index.json')
         .then(response => response.json())
@@ -57,19 +65,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const query = miniSearchInput.value.trim();
                 if (query.length < minChar) {
                     updateList();
-                    console.log('not enough characters')
                     return;
                 }
 
-                if (isAlertListPage) {
-                    const results = fuse.search(query);
-                    gameList.innerHTML = results.map(result => createGameItemHTML(result.item)).join('');
-                }
-
-                if (isBasedGamesPage) {
-                    const results = fuseBased.search(query);
-                    gameList.innerHTML = results.map(result => createGameItemHTML(result.item)).join('');
-                }
+                const searchResults = isAlertListPage ? fuse : fuseBased;
+                const results = searchResults.search(query);
+                gameList.innerHTML = results.map(result => createGameItemHTML(result.item)).join('');
+                ensureMinimumItems(gameList, 4);
             };
 
             const updateList = () => {
